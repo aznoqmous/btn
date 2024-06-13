@@ -1,7 +1,10 @@
 export default class Btn {
-    constructor(container){
+    constructor(container, opts={}){
+        this.opts = Object.assign({
+            animationDurationMs: 700,
+            autoClean: false
+        }, this)
         this.container = container
-        this.animationDuration = 700
         this.build()
         this.bind()
     }
@@ -22,32 +25,37 @@ export default class Btn {
         this.container.append(element)
         element.className = "hover-effect"
         element.style.position = "absolute"
-        element.style.opacity = 0
         element.style.pointerEvents = "none"
         element.style.borderRadius = "50%"
         element.style.aspectRatio = 1
+        element.style.pointerEvents = "none"
         element.style.transform = "translate(-50%, -50%)"
         return element
     }
 
     bind(){
         this.container.addEventListener('mouseenter', (e)=>{
+            //if(this.element) this.element.remove()
+            this.mousePosition = {x: e.offsetX, y: e.offsetY}
             const element = this.createElement()
+            this.element = element
             element.style.transition = null
             element.style.left = e.offsetX + "px"
             element.style.top = e.offsetY + "px"
             element.style.width = "0px"
-            element.style.opacity = 0.5
             
+            const rect = this.container.getBoundingClientRect()
+            const size = Math.max(rect.width, rect.left)
+
             setTimeout(()=>{
-
-
-                element.style.transition = `all ${this.animationDuration}ms ease`
-
-                element.style.width = "20rem"
-                element.style.opacity = 0
-                //setTimeout(()=> element.remove(), this.animationDuration)
-            }, 10)
+                element.style.transition = `all ${this.opts.animationDurationMs}ms ease`
+                element.style.width = size + "px"
+                element.classList.add('visible')
+                if(!this.opts.autoClean) setTimeout(()=> element.remove(), this.opts.animationDurationMs)
+            })
+        })
+        this.container.addEventListener('mouseleave', ()=>{
+            if(this.opts.autoClean) this.element.remove()
         })
     }
 

@@ -44,11 +44,14 @@ body {
     background: linear-gradient(to right, var(--background-0), var(--background-1));
     border-radius: 2rem;
 
+    display: flex;
 }
+
 .btn span {
     transition: all 0.2s ease;
     transform: scale(1);
     display: block;
+    z-index: 10;
 }
 .btn:hover span {
     transform: scale(1.1);
@@ -73,6 +76,10 @@ body {
 
 .hover-effect {
     background: #fff;
+    opacity: 0.5;
+    &.visible {
+        opacity: 0;
+    }
 }
 
 ul {
